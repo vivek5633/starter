@@ -33,5 +33,4 @@ async function sendSMSWithMsg91(name, phoneNumber) {
     }
 }
 
-// Export the function
-module.export = { sendSMSWithMsg91 };
+export default sendSMSWithMsg91
