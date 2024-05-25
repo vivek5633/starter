@@ -5,6 +5,10 @@ import axios from "axios"
     // const MSG91_API_KEY = '422647AWRRh9VldHq6650826aP1';
     // const MSG91_SENDER_ID = 'MSCIENCE';
 
+    const s = await axios.get("https://google.com");
+
+   log(s);
+
     // const url = 'https://api.msg91.com/api/v5/flow/';
 
     // const requestBody = {
