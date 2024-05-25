@@ -1,7 +1,7 @@
 import axios from "axios"
 
 // Define the function
-export async function sendSMSWithMsg91(name, phoneNumber) {
+async function sendSMSWithMsg91(name, phoneNumber) {
     const MSG91_API_KEY = '422647AWRRh9VldHq6650826aP1';
     const MSG91_SENDER_ID = 'MSCIENCE';
 
@@ -33,4 +33,5 @@ export async function sendSMSWithMsg91(name, phoneNumber) {
     }
 }
 
-
+// Export the function
+module.export = { sendSMSWithMsg91 };
