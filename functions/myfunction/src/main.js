@@ -1,7 +1,7 @@
 import axios from "axios"
 
 // Define the function
- async function sendSMSWithMsg91({log}) {
+ async function sendSMSWithMsg91({ req, res, log, error }) {
     // const MSG91_API_KEY = '422647AWRRh9VldHq6650826aP1';
     // const MSG91_SENDER_ID = 'MSCIENCE';
 
@@ -32,6 +32,12 @@ import axios from "axios"
     //     throw error;
     // }
     log('Hello, Logs!');
+
+        // Send a response with the res object helpers
+        // `res.send()` dispatches a string back to the client
+        return res.send('Hello, World!');
+      
+    
 }
 
 export default sendSMSWithMsg91
