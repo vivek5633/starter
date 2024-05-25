@@ -1,73 +1,29 @@
-import axios from 'axios';
+const sdk = require('node-appwrite');
 
-export default async function(req, res) {
-    try {
-        // Check if req.body is undefined
-        if (!req.body) {
-            return res.status(400).json({
-                success: false,
-                message: 'Request body is empty or not properly formatted',
-            });
-        }
+// Init SDK
+const client = new sdk.Client();
 
-        // Parse the payload
-        const { name, email, phone, message } = req.body;
+const messaging = new sdk.Messaging(client);
 
-        // Check if all required fields are present
-        if (!name || !email || !phone || !message) {
-            return res.status(400).json({
-                success: false,
-                message: 'Missing required fields in the request body',
-            });
-        }
+client
+    .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
+    .setProject('6650338c002663d9f2ce')                 // Your project ID
+    .setKey('665034f20017de8170fb') // Your secret API key
+;
 
-        // Prepare the data for MSG91 API
-        const data = {
-            flow_id: process.env.MSG91_TEMPLATE_ID,
-            sender: process.env.MSG91_SENDER_ID,
-            recipients: [
-                {
-                    mobiles: process.env.MY_PHONE_NUMBER,
-                    VAR1: name,
-                    VAR2: email,
-                    VAR3: phone,
-                    VAR4: message,
-                },
-            ],
-        };
+// Assuming you have retrieved the phone number and message content from somewhere
+const phoneNumber = '+919651260202';
+const messageContent = 'data is updated';
 
-        // Send the request to MSG91 API
-        const response = await axios.post(
-            'https://api.msg91.com/api/v5/flow/',
-            data,
-            {
-                headers: {
-                    authkey: process.env.MSG91_AUTH_KEY,
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
+// Send SMS using Appwrite's Messaging API
+const message = await messaging.createSMS(
+    'msg91',                                    // SMS provider (Msg91)
+    messageContent,                             // Message content
+    [],                                         // Topics (optional)
+    [phoneNumber],                              // Recipient phone numbers
+    [],                                         // Targets (optional)
+    true,                                       // Draft (optional)
+    ''                                          // Scheduled at (optional)
+);
 
-        // Check the response status from MSG91 API
-        if (response.status === 200) {
-            return res.status(200).json({
-                success: true,
-                message: 'SMS sent successfully',
-                data: response.data,
-            });
-        } else {
-            return res.status(500).json({
-                success: false,
-                message: 'Failed to send SMS',
-            });
-        }
-    } catch (error) {
-        console.error("Error sending SMS:", error);
-
-        return res.status(500).json({
-            success: false,
-            message: 'Error sending SMS',
-            error: error.message,
-        });
-    }
-}
+console.log('SMS sent successfully:', message);
