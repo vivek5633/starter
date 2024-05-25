@@ -14,6 +14,8 @@ export default async function(req, res) {
 
     const { name, email, phone, message } = payload;
 
+    console.log(name,email,phone,message);
+
     try {
         const response = await axios.post(
             'https://api.msg91.com/api/v5/flow/',
