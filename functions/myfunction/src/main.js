@@ -2,6 +2,14 @@ import axios from 'axios';
 
 export default async function(req, res) {
     try {
+        // Check if req.body is undefined
+        if (!req.body) {
+            return res.status(400).json({
+                success: false,
+                message: 'Request body is empty or not properly formatted',
+            });
+        }
+
         // Parse the payload
         const { name, email, phone, message } = req.body;
 
@@ -9,7 +17,7 @@ export default async function(req, res) {
         if (!name || !email || !phone || !message) {
             return res.status(400).json({
                 success: false,
-                message: 'Missing required fields',
+                message: 'Missing required fields in the request body',
             });
         }
 
