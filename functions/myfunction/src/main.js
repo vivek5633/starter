@@ -1,29 +1,33 @@
-import sdk from "node-appwrite"
+import { Client } from 'node-appwrite';
 
-// Init SDK
-const client = new sdk.Client();
+// This is your Appwrite function
+// It's executed each time we get a request
+export default async ({ req, res, log, error }) => {
+  // Why not try the Appwrite SDK?
+  //
+  // const client = new Client()
+  //    .setEndpoint('https://cloud.appwrite.io/v1')
+  //    .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
+  //    .setKey(process.env.APPWRITE_API_KEY);
 
-const messaging = new sdk.Messaging(client);
+  // You can log messages to the console
+  log('Hello, Logs!');
 
-client
-    .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
-    .setProject('6650338c002663d9f2ce')                 // Your project ID
-    .setKey('665034f20017de8170fb') // Your secret API key
-;
+  // If something goes wrong, log an error
+  error('Hello, Errors!');
 
-// Assuming you have retrieved the phone number and message content from somewhere
-const phoneNumber = '+919651260202';
-const messageContent = 'data is updated';
+  // The `req` object contains the request data
+  if (req.method === 'GET') {
+    // Send a response with the res object helpers
+    // `res.send()` dispatches a string back to the client
+    return res.send('Hello, World!');
+  }
 
-// Send SMS using Appwrite's Messaging API
-const message = await messaging.createSMS(
-    'msg91',                                    // SMS provider (Msg91)
-    messageContent,                             // Message content
-    [],                                         // Topics (optional)
-    [phoneNumber],                              // Recipient phone numbers
-    [],                                         // Targets (optional)
-    true,                                       // Draft (optional)
-    ''                                          // Scheduled at (optional)
-);
-
-console.log('SMS sent successfully:', message);
+  // `res.json()` is a handy helper for sending JSON
+  return res.json({
+    motto: 'Build like a team of hundreds_',
+    learn: 'https://appwrite.io/docs',
+    connect: 'https://appwrite.io/discord',
+    getInspired: 'https://builtwith.appwrite.io',
+  });
+};
