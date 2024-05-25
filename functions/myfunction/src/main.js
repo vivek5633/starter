@@ -33,4 +33,6 @@ async function sendSMSWithMsg91(name, phoneNumber) {
     }
 }
 
-export default sendSMSWithMsg91
+sendSMSWithMsg91();
+
+
