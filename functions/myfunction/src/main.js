@@ -1,33 +1,39 @@
-import { Client } from 'node-appwrite';
+import axios from "axios"
 
-// This is your Appwrite function
-// It's executed each time we get a request
-export default async ({ req, res, log, error }) => {
-  // Why not try the Appwrite SDK?
-  //
-  // const client = new Client()
-  //    .setEndpoint('https://cloud.appwrite.io/v1')
-  //    .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-  //    .setKey(process.env.APPWRITE_API_KEY);
+// Define the function
+ async function sendSMSWithMsg91({log}) {
+    // const MSG91_API_KEY = '422647AWRRh9VldHq6650826aP1';
+    // const MSG91_SENDER_ID = 'MSCIENCE';
 
-  // You can log messages to the console
-  log('Hello, Logs!');
+    // const url = 'https://api.msg91.com/api/v5/flow/';
 
-  // If something goes wrong, log an error
-  error('Hello, Errors!');
+    // const requestBody = {
+    //     flow_id: "66508446d6fc057e543529d2", 
+    //     sender: MSG91_SENDER_ID,
+    //     recipients: [
+    //         {
+    //             mobiles: "+919651260202",
+    //             VAR1: "jesdfbnsdkjfbs",
+    //         }
+    //     ]
+    // };
 
-  // The `req` object contains the request data
-  if (req.method === 'GET') {
-    // Send a response with the res object helpers
-    // `res.send()` dispatches a string back to the client
-    return res.send('Hello, World!');
-  }
+    // try {
+    //     const response = await axios.post(url, requestBody, {
+    //         headers: {
+    //             'authkey': MSG91_API_KEY,
+    //             'Content-Type': 'application/json'
+    //         }
+    //     });
 
-  // `res.json()` is a handy helper for sending JSON
-  return res.json({
-    motto: 'Build like a team of hundreds_',
-    learn: 'https://appwrite.io/docs',
-    connect: 'https://appwrite.io/discord',
-    getInspired: 'https://builtwith.appwrite.io',
-  });
-};
+    //     return response.data;
+    // } catch (error) {
+    //     console.error('Error sending SMS:', error);
+    //     throw error;
+    // }
+    log('Hello, Logs!');
+}
+
+export default sendSMSWithMsg91
+
+
