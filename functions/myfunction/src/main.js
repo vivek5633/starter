@@ -1,52 +1,40 @@
-const express = require('express');
+// Import necessary modules
 const axios = require('axios');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+// Define the function
+async function sendSMSWithMsg91() {
+    const MSG91_API_KEY = '422647AWRRh9VldHq6650826aP1';
+    const MSG91_SENDER_ID = 'MSCIENCE';
+    const recipientPhoneNumber = '+919651260202'; 
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+    const url = 'https://api.msg91.com/api/v5/flow/';
 
-// Route to send SMS
-app.post('/send-sms', async (req, res) => {
-    const { name, email, phone, message } = req.body;
+    const requestBody = {
+        flow_id: "66508446d6fc057e543529d2",
+        sender: MSG91_SENDER_ID,
+        recipients: [
+            {
+                mobiles: recipientPhoneNumber,
+                VAR1: "Hey from is updated"
+            }
+        ]
+    };
 
     try {
-        const response = await axios.post(
-            'https://api.msg91.com/api/v5/flow/',
-            {
-                flow_id: process.env.MSG91_TEMPLATE_ID,
-                sender: process.env.MSG91_SENDER_ID,
-                recipients: [
-                    {
-                        mobiles: [process.env.MY_PHONE_NUMBER],
-                        VAR1: name,
-                        VAR2: email,
-                        VAR3: phone,
-                        VAR4: message,
-                    },
-                ],
-            },
-            {
-                headers: {
-                    authkey: process.env.MSG91_AUTH_KEY,
-                    'Content-Type': 'application/json',
-                },
+        const response = await axios.post(url, requestBody, {
+            headers: {
+                'authkey': MSG91_API_KEY,
+                'Content-Type': 'application/json'
             }
-        );
+        });
 
-        if (response.status === 200) {
-            res.status(200).json({ message: 'SMS sent successfully' });
-        } else {
-            res.status(response.status).json({ message: 'Failed to send SMS' });
-        }
+        return response.data;
     } catch (error) {
         console.error('Error sending SMS:', error);
-        res.status(500).json({ message: 'Error sending SMS' });
+        throw error;
     }
-});
+}
 
-// Start the server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Export the function
+module.exports = { sendSMSWithMsg91 };
+
