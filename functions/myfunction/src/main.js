@@ -1,7 +1,8 @@
-const axios = require('axios');
+import axios from 'axios';
 
-module.exports = async function (req, res) {
+export default async function (req, res) {
     const payload = JSON.parse(req.payload);
+
     const { name, email, phone, message } = payload;
 
     try {
@@ -12,7 +13,7 @@ module.exports = async function (req, res) {
                 sender: "MSCIENCE",
                 recipients: [
                     {
-                        mobiles: "+919651260202",
+                        mobiles:"+919651260202",
                         VAR1: name,
                         VAR2: email,
                         VAR3: phone,
@@ -38,7 +39,7 @@ module.exports = async function (req, res) {
         res.json({
             success: false,
             message: 'Error sending SMS',
-            error: error.response ? error.response.data : error.message,
+            error: error.message,
         });
     }
 };
