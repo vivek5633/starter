@@ -3,6 +3,9 @@ import axios from 'axios';
 export default async function(req, res) {
     let payload;
 
+    
+    console.log("Received payload:", req.payload);
+
     try {
         payload = JSON.parse(req.payload);
     } catch (error) {
@@ -14,7 +17,8 @@ export default async function(req, res) {
 
     const { name, email, phone, message } = payload;
 
-    console.log(name,email,phone,message);
+    // Debugging: log the parsed values
+    console.log("Parsed payload:", payload);
 
     try {
         const response = await axios.post(
@@ -24,7 +28,7 @@ export default async function(req, res) {
                 sender: "MSCIENCE",
                 recipients: [
                     {
-                        mobiles: "+919651260202",
+                        mobiles: "+91919651260202",
                         VAR1: name,
                         VAR2: email,
                         VAR3: phone,
@@ -40,12 +44,18 @@ export default async function(req, res) {
             }
         );
 
+        // Debugging: log the response from MSG91
+        console.log("MSG91 response:", response.data);
+
         return res.json({
             success: true,
             message: 'SMS sent successfully',
             data: response.data,
         });
     } catch (error) {
+        // Debugging: log the error
+        console.error("Error sending SMS:", error);
+
         return res.json({
             success: false,
             message: 'Error sending SMS',
