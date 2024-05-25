@@ -3,10 +3,12 @@ import axios from 'axios';
 export default async function (req, res, context) {
     let payload;
 
+    context.log('Payload received:', req.payload); // Log the raw payload
+
     try {
         payload = JSON.parse(req.payload);
     } catch (error) {
-        console.error('Error parsing payload:', error);
+        context.log('Error parsing payload:', error.message);
         return context.log('Invalid payload format: ' + error.message);
     }
 
@@ -36,15 +38,14 @@ export default async function (req, res, context) {
             }
         );
 
-        context.log('SMS sent successfully: ' + JSON.stringify(response.data));
+        context.log('SMS sent successfully:', JSON.stringify(response.data));
         res.json({
             success: true,
             message: 'SMS sent successfully',
             data: response.data,
         });
     } catch (error) {
-        console.error('Error sending SMS:', error);
-        context.log('Error sending SMS: ' + error.message);
+        context.log('Error sending SMS:', error.message);
         res.json({
             success: false,
             message: 'Error sending SMS',
