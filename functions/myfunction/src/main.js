@@ -1,33 +1,35 @@
-import { Client } from 'node-appwrite';
+import axios from 'axios';
 
-// This is your Appwrite function
-// It's executed each time we get a request
-export default async ({ req, res, log, error }) => {
-  // Why not try the Appwrite SDK?
-  //
-  // const client = new Client()
-  //    .setEndpoint('https://cloud.appwrite.io/v1')
-  //    .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-  //    .setKey(process.env.APPWRITE_API_KEY);
+// Your Msg91 API credentials
+const authKey = '422647AWRRh9VldHq6650826aP1';
+const senderId = 'MSCIENCE'; // 6 characters
 
-  // You can log messages to the console
-  log('Hello, Logs!');
+// Function to send SMS
+async function sendSMS(mobileNumber, message) {
+    try {
+        const response = await axios.post('https://api.msg91.com/api/v5/flow/', {
+            "flow_id": "YourFlowId",
+            "recipients": {
+                "mobiles": [+919651260202]
+            },
+            "global_vars": {
+                "message": message
+            }
+        }, {
+            headers: {
+                'authkey': authKey,
+                'Content-Type': 'application/json'
+            }
+        });
 
-  // If something goes wrong, log an error
-  error('Hello, Errors!');
+        console.log('Message sent successfully:', response.data);
+    } catch (error) {
+        console.error('Error sending message:', error.response.data);
+    }
+}
 
-  // The `req` object contains the request data
-  if (req.method === 'GET') {
-    // Send a response with the res object helpers
-    // `res.send()` dispatches a string back to the client
-    return res.send('Hello, World!');
-  }
+// Example usage
+const mobileNumber = '+919651260202'; // Include country code without leading '+'
+const message = 'hey someone send a feedback form';
 
-  // `res.json()` is a handy helper for sending JSON
-  return res.json({
-    motto: 'Build like a team of hundreds_',
-    learn: 'https://appwrite.io/docs',
-    connect: 'https://appwrite.io/discord',
-    getInspired: 'https://builtwith.appwrite.io',
-  });
-};
+sendSMS(mobileNumber, message);
