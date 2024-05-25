@@ -1,62 +1,62 @@
 import axios from 'axios';
 
 export default async function(req, res) {
-    let payload;
-
-    
-    console.log("Received payload:", req.payload);
-
     try {
-        payload = JSON.parse(req.payload);
-    } catch (error) {
-        return res.json({
-            success: false,
-            message: 'Invalid payload format: ' + error.message,
-        });
-    }
+        // Parse the payload
+        const { name, email, phone, message } = req.body;
 
-    const { name, email, phone, message } = payload;
+        // Check if all required fields are present
+        if (!name || !email || !phone || !message) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required fields',
+            });
+        }
 
-    // Debugging: log the parsed values
-    console.log("Parsed payload:", payload);
+        // Prepare the data for MSG91 API
+        const data = {
+            flow_id: process.env.MSG91_TEMPLATE_ID,
+            sender: process.env.MSG91_SENDER_ID,
+            recipients: [
+                {
+                    mobiles: process.env.MY_PHONE_NUMBER,
+                    VAR1: name,
+                    VAR2: email,
+                    VAR3: phone,
+                    VAR4: message,
+                },
+            ],
+        };
 
-    try {
+        // Send the request to MSG91 API
         const response = await axios.post(
             'https://api.msg91.com/api/v5/flow/',
-            {
-                flow_id: "66508446d6fc057e543529d2",
-                sender: "MSCIENCE",
-                recipients: [
-                    {
-                        mobiles: "+91919651260202",
-                        VAR1: name,
-                        VAR2: email,
-                        VAR3: phone,
-                        VAR4: message,
-                    },
-                ],
-            },
+            data,
             {
                 headers: {
-                    authkey: "422647AWRRh9VldHq6650826aP1",
+                    authkey: process.env.MSG91_AUTH_KEY,
                     'Content-Type': 'application/json',
                 },
             }
         );
 
-        // Debugging: log the response from MSG91
-        console.log("MSG91 response:", response.data);
-
-        return res.json({
-            success: true,
-            message: 'SMS sent successfully',
-            data: response.data,
-        });
+        // Check the response status from MSG91 API
+        if (response.status === 200) {
+            return res.status(200).json({
+                success: true,
+                message: 'SMS sent successfully',
+                data: response.data,
+            });
+        } else {
+            return res.status(500).json({
+                success: false,
+                message: 'Failed to send SMS',
+            });
+        }
     } catch (error) {
-        // Debugging: log the error
         console.error("Error sending SMS:", error);
 
-        return res.json({
+        return res.status(500).json({
             success: false,
             message: 'Error sending SMS',
             error: error.message,
