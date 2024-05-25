@@ -1,17 +1,13 @@
 import axios from 'axios';
 
-export default async function (req, res) {
+export default async function (req, res, context) {
     let payload;
 
     try {
         payload = JSON.parse(req.payload);
     } catch (error) {
         console.error('Error parsing payload:', error);
-        return res.json({
-            success: false,
-            message: 'Invalid payload format',
-            error: error.message,
-        });
+        return context.log('Invalid payload format: ' + error.message);
     }
 
     const { name, email, phone, message } = payload;
@@ -20,11 +16,11 @@ export default async function (req, res) {
         const response = await axios.post(
             'https://api.msg91.com/api/v5/flow/',
             {
-                flow_id: "66508446d6fc057e543529d2",
-                sender: "MSCIENCE",
+                flow_id: process.env.MSG91_TEMPLATE_ID,
+                sender: process.env.MSG91_SENDER_ID,
                 recipients: [
                     {
-                        mobiles: "+919651260202",
+                        mobiles: process.env.MY_PHONE_NUMBER,
                         VAR1: name,
                         VAR2: email,
                         VAR3: phone,
@@ -34,12 +30,13 @@ export default async function (req, res) {
             },
             {
                 headers: {
-                    authkey: "422647AWRRh9VldHq6650826aP1",
+                    authkey: process.env.MSG91_AUTH_KEY,
                     'Content-Type': 'application/json',
                 },
             }
         );
 
+        context.log('SMS sent successfully: ' + JSON.stringify(response.data));
         res.json({
             success: true,
             message: 'SMS sent successfully',
@@ -47,6 +44,7 @@ export default async function (req, res) {
         });
     } catch (error) {
         console.error('Error sending SMS:', error);
+        context.log('Error sending SMS: ' + error.message);
         res.json({
             success: false,
             message: 'Error sending SMS',
