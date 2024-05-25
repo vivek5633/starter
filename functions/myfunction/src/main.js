@@ -1,7 +1,18 @@
 import axios from 'axios';
 
 export default async function (req, res) {
-    const payload = JSON.parse(req.payload);
+    let payload;
+
+    try {
+        payload = JSON.parse(req.payload);
+    } catch (error) {
+        console.error('Error parsing payload:', error);
+        return res.json({
+            success: false,
+            message: 'Invalid payload format',
+            error: error.message,
+        });
+    }
 
     const { name, email, phone, message } = payload;
 
@@ -13,7 +24,7 @@ export default async function (req, res) {
                 sender: "MSCIENCE",
                 recipients: [
                     {
-                        mobiles:"+919651260202",
+                        mobiles: "+919651260202",
                         VAR1: name,
                         VAR2: email,
                         VAR3: phone,
