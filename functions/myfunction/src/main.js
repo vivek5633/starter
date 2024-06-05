@@ -1,11 +1,12 @@
-import axios from "axios"
+import { fetch } from 'undici';
 
 // Define the function
  async function sendSMSWithMsg91({ req, res, log, error }) {
     // const MSG91_API_KEY = '422647AWRRh9VldHq6650826aP1';
     // const MSG91_SENDER_ID = 'MSCIENCE';
 
-    const s = await axios.get("https://google.com");
+    const s = await fetch("https://google.com");
+   
 
    log(s);
 
